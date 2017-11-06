@@ -29,8 +29,6 @@
 #include<QQmlExtensionPlugin>
 #include<qqml.h>
 
-#include"CVCamera.h"
-
 /**
  * @brief Object that exposes the CVCamera plugin and friends as QML objects
  */

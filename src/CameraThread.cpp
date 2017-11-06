@@ -29,7 +29,7 @@
 // CameraTask implementation
 //*****************************************************************************
 
-CameraTask::CameraTask(BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height)
+CameraTask::CameraTask(AbstractVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height)
 {
     this->running = true;
     this->camera = camera;
@@ -95,7 +95,7 @@ void CameraTask::doWork()
 
 #else //Assuming desktop, RGB camera image and RGBA QVideoFrame
             cv::Mat tempMat(height,width,CV_8UC3,cameraFrame);
-            cv::cvtColor(tempMat,screenImage,cv::COLOR_RGB2RGBA);
+            cv::cvtColor(tempMat, screenImage, cv::COLOR_BGR2RGBA);
 #endif
 
         }
@@ -111,7 +111,7 @@ void CameraTask::doWork()
 
         }
 
-        emit imageReady();
+        Q_EMIT imageReady();
 
 #if defined(QT_DEBUG) && !defined(ANDROID)
         millis = (int)timer.restart();
@@ -130,7 +130,7 @@ void CameraTask::doWork()
 // CameraThread implementation
 //*****************************************************************************
 
-CameraThread::CameraThread(BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height)
+CameraThread::CameraThread(AbstractVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height)
 {
     task = new CameraTask(camera,videoFrame,cvImageBuf,width,height);
     task->moveToThread(&workerThread);

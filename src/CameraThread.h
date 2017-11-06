@@ -64,7 +64,7 @@ public:
      * @param width Width of the camera image
      * @param height Height of the camera image
      */
-    CameraTask(BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
+    CameraTask(AbstractVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
 
     /**
      * @brief Destroys this camera access task, does not touch the camera or the videoFrame
@@ -85,7 +85,7 @@ private:
 
     int width;                                  ///< Width of the camera image
     int height;                                 ///< Height of the camera image
-    BetterVideoCapture* camera;                 ///< The camera to get data from
+    AbstractVideoCapture* camera;                 ///< The camera to get data from
     bool running = false;                       ///< Whether the worker thread is running
     QVideoFrame* videoFrame;                    ///< Place to draw camera image to
     unsigned char* cvImageBuf;                  ///< Place to export camera image to
@@ -99,14 +99,14 @@ private:
      */
     void convertUVsp2UVp(unsigned char* __restrict srcptr, unsigned char* __restrict dstptr, int stride);
 
-public slots:
+public Q_SLOTS:
 
     /**
      * @brief Continuously gets data from the camera
      */
     void doWork();
 
-signals:
+Q_SIGNALS:
 
     /**
      * @brief Emitted when image from a new frame is ready
@@ -131,7 +131,7 @@ public:
      * @param width Width of the camera image
      * @param height Height of the camera image
      */
-    CameraThread(BetterVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
+    CameraThread(AbstractVideoCapture* camera, QVideoFrame* videoFrame, unsigned char* cvImageBuf, int width, int height);
 
     /**
      * @brief Destroys this camera controller
@@ -153,7 +153,7 @@ private:
     QThread workerThread;               ///< The thread that the camera will work in
     CameraTask* task = NULL;            ///< The camera loop method and parameter container
 
-signals:
+Q_SIGNALS:
 
     /**
      * @brief Emitted when image from a new frame is ready

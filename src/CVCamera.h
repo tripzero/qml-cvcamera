@@ -39,6 +39,7 @@
 #include<opencv2/highgui/highgui.hpp>
 
 #include"CameraThread.h"
+#include "abstractvideocapture.h"
 
 Q_DECLARE_METATYPE(cv::Mat)
 
@@ -124,7 +125,7 @@ public:
      */
     QVariant getCvImage();
 
-signals:
+Q_SIGNALS:
 
     /**
      * @brief Emitted after the camera image size has changed
@@ -152,7 +153,7 @@ private:
     int device = 0;                                         ///< The camera device number
     QStringList deviceList;                                 ///< The list of available devices, indices corresponding to device indices
     QSize size;                                             ///< The desired camera resolution
-    BetterVideoCapture* camera = NULL;                      ///< The camera object
+    AbstractVideoCapture* camera = NULL;                      ///< The camera object
     CameraThread* thread = NULL;                            ///< Thread to run camera image acquisition
 
     QVideoFrame* videoFrame = NULL;                         ///< Object that contains the image buffer to be presented to the video surface
@@ -177,7 +178,7 @@ private:
      */
     void allocateVideoFrame();
 
-public slots:
+public Q_SLOTS:
 
     /**
      * @brief Callback for a parent change event
@@ -186,7 +187,7 @@ public slots:
      */
     void changeParent(QQuickItem* parent);
 
-private slots:
+private Q_SLOTS:
 
     /**
      * @brief Callback for when image from the camera is received

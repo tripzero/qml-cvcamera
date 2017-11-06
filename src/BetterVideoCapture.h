@@ -27,6 +27,7 @@
 #define BETTERVIDEOCAPTURE_H
 
 #include<opencv2/videoio.hpp>
+#include "abstractvideocapture.h"
 
 #ifdef ANDROID
 #include"CVCaptureAndroid.h"
@@ -35,7 +36,7 @@
 /**
  * @brief A better cv::VideoCapture for desktop and Android
  */
-class BetterVideoCapture {
+class BetterVideoCapture: public AbstractVideoCapture {
 
 public:
 

@@ -1,7 +1,8 @@
 TEMPLATE = lib
 TARGET = cvcameraplugin
 
-CONFIG += qt plugin c++11 nostrip
+CONFIG += qt plugin c++11 nostrip debug
+CONFIG += no_keywords
 CONFIG -= android_install
 
 QT += qml quick multimedia
@@ -16,34 +17,37 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = CVCamera
 
 HEADERS += \
-    src/CVCamera.h \
-    src/CVCameraPlugin.h \
-    src/CameraThread.h \
-    src/BetterVideoCapture.h
+        src/CVCamera.h \
+        src/CVCameraPlugin.h \
+	src/CameraThread.h \
+	src/BetterVideoCapture.h \
+	src/abstractvideocapture.h \
+	src/realsensevideocapture.h
 
 SOURCES += \
-    src/CVCamera.cpp \
-    src/CVCameraPlugin.cpp \
-    src/CameraThread.cpp \
-    src/BetterVideoCapture.cpp
+        src/CVCamera.cpp \
+        src/CVCameraPlugin.cpp \
+	src/CameraThread.cpp \
+	src/BetterVideoCapture.cpp \
+	src/realsensevideocapture.cpp
 
-LIBS += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio
+LIBS += -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lrealsense
 
 android {
-    HEADERS += \
-        src/CVCaptureAndroid.h
-    SOURCES += \
-        src/CVCaptureAndroid.cpp
+	HEADERS += \
+		src/CVCaptureAndroid.h
+	SOURCES += \
+		src/CVCaptureAndroid.cpp
 
-    #Enable automatic NEON vectorization
-    QMAKE_CXXFLAGS -= -mfpu=vfp
-    QMAKE_CXXFLAGS_RELEASE -= -mfpu=vfp
-    QMAKE_CXXFLAGS += -mfpu=neon -ftree-vectorize -ftree-vectorizer-verbose=1 -mfloat-abi=softfp
-    QMAKE_CXXFLAGS_RELEASE += -mfpu=neon -ftree-vectorize -ftree-vectorizer-verbose=1 -mfloat-abi=softfp
+	#Enable automatic NEON vectorization
+	QMAKE_CXXFLAGS -= -mfpu=vfp
+	QMAKE_CXXFLAGS_RELEASE -= -mfpu=vfp
+	QMAKE_CXXFLAGS += -mfpu=neon -ftree-vectorize -ftree-vectorizer-verbose=1 -mfloat-abi=softfp
+	QMAKE_CXXFLAGS_RELEASE += -mfpu=neon -ftree-vectorize -ftree-vectorizer-verbose=1 -mfloat-abi=softfp
 
-    INCLUDEPATH += $(ANDROID_STANDALONE_TOOLCHAIN)/sysroot/usr/share/opencv/sdk/native/jni/include
-    LIBS += -L$(ANDROID_STANDALONE_TOOLCHAIN)/sysroot/usr/share/opencv/sdk/native/libs/armeabi-v7a/
-    LIBS += -lopencv_androidcamera
+	INCLUDEPATH += $(ANDROID_STANDALONE_TOOLCHAIN)/sysroot/usr/share/opencv/sdk/native/jni/include
+	LIBS += -L$(ANDROID_STANDALONE_TOOLCHAIN)/sysroot/usr/share/opencv/sdk/native/libs/armeabi-v7a/
+	LIBS += -lopencv_androidcamera
 }
 
 OTHER_FILES += qmldir cvcamera.types
@@ -52,10 +56,10 @@ OTHER_FILES += qmldir cvcamera.types
 qmldir.files = qmldir
 types.files = cvcamera.types
 unix {
-    installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
-    qmldir.path = $$installPath
-    types.path = $$installPath
-    target.path = $$installPath
-    INSTALLS += target qmldir types
+	installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
+	qmldir.path = $$installPath
+	types.path = $$installPath
+	target.path = $$installPath
+	INSTALLS += target qmldir types
 }
 

@@ -24,6 +24,7 @@
  */
 
 #include"CVCamera.h"
+#include "realsensevideocapture.h"
 
 CVCamera::CVCamera(QQuickItem* parent) :
     QQuickItem(parent)
@@ -37,13 +38,13 @@ CVCamera::CVCamera(QQuickItem* parent) :
         device += cameraInfo.description();
         deviceList << device;
     }
-    emit deviceListChanged();
+    Q_EMIT deviceListChanged();
 
-    size = QSize(640,480);
+    size = QSize(1920,1080);
     connect(this, &QQuickItem::parentChanged, this, &CVCamera::changeParent);
 
     //Open camera right away
-    update();
+    camera = new RealsenseVideoCapture();
 }
 
 CVCamera::~CVCamera()
@@ -84,7 +85,7 @@ void CVCamera::setSize(QSize size)
     if(this->size.width() != size.width() || this->size.height() != size.height()){
         this->size = size;
         update();
-        emit sizeChanged();
+        Q_EMIT sizeChanged();
     }
 }
 
@@ -132,7 +133,11 @@ void CVCamera::update()
 
     //Destroy old thread, camera accessor and buffers
     delete thread;
-    delete camera;
+
+    if (camera->isOpened()) {
+        camera->stop();
+    }
+
     if(videoFrame && videoFrame->isMapped())
         videoFrame->unmap();
     delete videoFrame;
@@ -145,7 +150,7 @@ void CVCamera::update()
         allocateCvImage();
     if(videoSurface)
         allocateVideoFrame();
-    camera = new BetterVideoCapture();
+
     thread = new CameraThread(camera,videoFrame,cvImageBuf,size.width(),size.height());
     connect(thread,SIGNAL(imageReady()), this, SLOT(imageReceived()));
 
@@ -180,7 +185,7 @@ void CVCamera::imageReceived()
 
     //Update exported CV image
     if(exportCvImage)
-        emit cvImageChanged();
+        Q_EMIT cvImageChanged();
 }
 
 QAbstractVideoSurface* CVCamera::getVideoSurface() const
