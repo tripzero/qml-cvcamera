@@ -6,14 +6,6 @@ RealsenseVideoCapture::RealsenseVideoCapture()
     :device(nullptr), width(0), height(0)
 {
     ctx.reset(new rs::context());
-
-    /*ptModule.reset(rs::person_tracking::person_tracking_video_module_factory::create_person_tracking_video_module("."));
-
-    rs::core::intrinsics color_intrin = rs::utils::convert_intrinsics(device->get_stream_intrinsics(rs::stream::color));
-    rs::core::intrinsics depth_intrin = rs::utils::convert_intrinsics(device->get_stream_intrinsics(rs::stream::depth));
-    rs::core::extrinsics extrinsics = rs::utils::convert_extrinsics(device->get_extrinsics(rs::stream::depth, rs::stream::color));
-    actualModuleConfig = rs::core::projection_interface::create_instance(&color_intrin, &depth_intrin, &extrinsics);
-    */
 }
 
 RealsenseVideoCapture::~RealsenseVideoCapture()
