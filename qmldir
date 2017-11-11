@@ -1,4 +1,4 @@
-module CVCamera
-plugin cvcameraplugin
-typeinfo cvcamera.qmltypes
+module RSCamera
+plugin rscameraplugin
+typeinfo rscamera.qmltypes
 

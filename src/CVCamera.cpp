@@ -27,7 +27,7 @@
 #include "realsensevideocapture.h"
 
 CVCamera::CVCamera(QQuickItem* parent) :
-    QQuickItem(parent)
+    QQuickItem(parent), m_fps(30)
 {
     //Build the list of available devices
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
@@ -40,10 +40,9 @@ CVCamera::CVCamera(QQuickItem* parent) :
     }
     Q_EMIT deviceListChanged();
 
-    size = QSize(1920,1080);
+    size = QSize(640, 480);
     connect(this, &QQuickItem::parentChanged, this, &CVCamera::changeParent);
 
-    //Open camera right away
     camera = new RealsenseVideoCapture();
 }
 
@@ -65,6 +64,20 @@ void CVCamera::changeParent(QQuickItem* parent)
 int CVCamera::getDevice() const
 {
     return device;
+}
+
+int CVCamera::getFps() const
+{
+    return m_fps;
+}
+
+void CVCamera::setFps(int fps)
+{
+    if (m_fps != fps) {
+        m_fps = fps;
+        update();
+        Q_EMIT fpsChanged();
+    }
 }
 
 void CVCamera::setDevice(int device)
@@ -123,7 +136,7 @@ void CVCamera::allocateVideoFrame()
 #ifdef ANDROID
     videoFrame = new QVideoFrame(size.width()*size.height()*3/2,size,size.width(),VIDEO_OUTPUT_FORMAT);
 #else
-    videoFrame = new QVideoFrame(size.width()*size.height()*4,size,size.width()*4,VIDEO_OUTPUT_FORMAT);
+    videoFrame = new QVideoFrame(size.width()*size.height()*4, size, size.width()*4, VIDEO_OUTPUT_FORMAT);
 #endif
 }
 
@@ -151,19 +164,22 @@ void CVCamera::update()
     if(videoSurface)
         allocateVideoFrame();
 
-    thread = new CameraThread(camera,videoFrame,cvImageBuf,size.width(),size.height());
+    thread = new CameraThread(camera,videoFrame,cvImageBuf, size.width(), size.height());
     connect(thread,SIGNAL(imageReady()), this, SLOT(imageReceived()));
 
     //Open newly created device
     try{
+        camera->setProperty(CV_CAP_PROP_FRAME_WIDTH, size.width());
+        camera->setProperty(CV_CAP_PROP_FRAME_HEIGHT, size.height());
+        camera->setProperty(CV_CAP_PROP_FPS, m_fps);
+
         if(camera->open(device)){
-            camera->setProperty(CV_CAP_PROP_FRAME_WIDTH,size.width());
-            camera->setProperty(CV_CAP_PROP_FRAME_HEIGHT,size.height());
+            DPRINT("setting width and height properties on camera");
             if(videoSurface){
                 if(videoSurface->isActive())
                     videoSurface->stop();
-                if(!videoSurface->start(QVideoSurfaceFormat(size,VIDEO_OUTPUT_FORMAT)))
-                    DPRINT("Could not start QAbstractVideoSurface, error: %d",videoSurface->error());
+                if(!videoSurface->start(QVideoSurfaceFormat(size, VIDEO_OUTPUT_FORMAT)))
+                    DPRINT("Could not start QAbstractVideoSurface, error: %d", videoSurface->error());
             }
             thread->start();
             DPRINT("Opened camera %d",device);

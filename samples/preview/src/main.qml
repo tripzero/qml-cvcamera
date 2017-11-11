@@ -3,7 +3,7 @@ import QtQuick.Window 2.1
 import QtQuick.Controls 1.2
 import QtMultimedia 5.0
 
-import CVCamera 1.0
+import RSCamera 1.0
 
 Window {
     visible: true
@@ -15,15 +15,17 @@ Window {
         anchors.fill: parent
     }
 
-    CVCamera {
+    RSCamera {
         id: camera
         device: 0
-        size: "640x480"
+        fps: 30
+        size: Qt.size(1920, 1080)
     }
 
     VideoOutput {
         anchors.fill:parent
         id: output
         source: camera
+        fillMode: VideoOutput.Stretch
     }
 }

@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = cvcameraplugin
+TARGET = rscameraplugin
 
 CONFIG += qt plugin c++11 nostrip debug
 CONFIG += no_keywords
@@ -14,19 +14,19 @@ QMAKE_CXXFLAGS += -O3
 QMAKE_CXXFLAGS_RELEASE += -O3
 
 TARGET = $$qtLibraryTarget($$TARGET)
-uri = CVCamera
+uri = RSCamera
 
 HEADERS += \
-        src/CVCamera.h \
-        src/CVCameraPlugin.h \
+		src/CVCamera.h \
+		src/CVCameraPlugin.h \
 	src/CameraThread.h \
 	src/BetterVideoCapture.h \
 	src/abstractvideocapture.h \
 	src/realsensevideocapture.h
 
 SOURCES += \
-        src/CVCamera.cpp \
-        src/CVCameraPlugin.cpp \
+		src/CVCamera.cpp \
+		src/CVCameraPlugin.cpp \
 	src/CameraThread.cpp \
 	src/BetterVideoCapture.cpp \
 	src/realsensevideocapture.cpp
@@ -50,7 +50,7 @@ android {
 	LIBS += -lopencv_androidcamera
 }
 
-OTHER_FILES += qmldir cvcamera.types
+OTHER_FILES += qmldir
 
 #Install plugin library, qmldir and types
 qmldir.files = qmldir
@@ -62,4 +62,7 @@ unix {
 	target.path = $$installPath
 	INSTALLS += target qmldir types
 }
+
+DISTFILES += \
+    rscamera.types
 

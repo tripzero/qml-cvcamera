@@ -24,6 +24,7 @@
  */
 
 #include"CameraThread.h"
+#include <iostream>
 
 //*****************************************************************************
 // CameraTask implementation
@@ -94,7 +95,8 @@ void CameraTask::doWork()
             convertUVsp2UVp(cameraFrame + height*width, videoFrame->bits() + height*width, height/2*width/2);
 
 #else //Assuming desktop, RGB camera image and RGBA QVideoFrame
-            cv::Mat tempMat(height,width,CV_8UC3,cameraFrame);
+            std::cout << "camera thread... height: " << height << ", width: " << width << std::endl;
+            cv::Mat tempMat(height, width, CV_8UC3, cameraFrame);
             cv::cvtColor(tempMat, screenImage, cv::COLOR_BGR2RGBA);
 #endif
 

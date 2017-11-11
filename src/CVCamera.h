@@ -54,6 +54,7 @@ Q_OBJECT
     Q_PROPERTY(QSize size READ getSize WRITE setSize NOTIFY sizeChanged)
     Q_PROPERTY(QStringList deviceList READ getDeviceList NOTIFY deviceListChanged)
     Q_PROPERTY(QVariant cvImage READ getCvImage NOTIFY cvImageChanged)
+    Q_PROPERTY(int fps READ getFps WRITE setFps)
 
 public:
 
@@ -75,6 +76,18 @@ public:
      * @return The current device number
      */
     int getDevice() const;
+
+    /**
+      * @brief Returns device frame rate per second
+      *
+      * @return frame rate per second
+      */
+    int getFps() const;
+
+    /**
+      * @brief sets device frame rate per second
+      */
+    void setFps(int fps);
 
     /**
      * @brief Changes the device number, releasing the old device and opening a new device
@@ -142,6 +155,11 @@ Q_SIGNALS:
      */
     void cvImageChanged();
 
+    /**
+      * @brief is emitted when fps changes
+      */
+    void fpsChanged();
+
 private:
 
 #ifdef ANDROID
@@ -153,6 +171,7 @@ private:
     int device = 0;                                         ///< The camera device number
     QStringList deviceList;                                 ///< The list of available devices, indices corresponding to device indices
     QSize size;                                             ///< The desired camera resolution
+    int m_fps;
     AbstractVideoCapture* camera = NULL;                      ///< The camera object
     CameraThread* thread = NULL;                            ///< Thread to run camera image acquisition
 

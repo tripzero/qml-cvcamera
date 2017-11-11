@@ -25,6 +25,7 @@ private:
     rs::device *device;
     uint width;
     uint height;
+    uint fps;
     //std::unique_ptr<rs::person_tracking::person_tracking_video_module_interface> ptModule;
 };
 

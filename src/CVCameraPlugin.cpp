@@ -28,5 +28,5 @@
 
 void CVCameraPlugin::registerTypes(const char* uri)
 {
-    qmlRegisterType<CVCamera>(uri, 1, 0, "CVCamera");
+    qmlRegisterType<CVCamera>(uri, 1, 0, "RSCamera");
 }
